@@ -26,7 +26,7 @@ def setup_logging(log_name="app"):
     global _logging_initialized, _logging_log_name
 
     # 延迟导入，避免循环导入问题
-    from ai_smart_assistant.core.config import get_settings
+    from .config import get_settings
 
     settings = get_settings()
 

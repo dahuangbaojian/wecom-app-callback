@@ -21,19 +21,21 @@ class WeComService:
         self.token = settings.WECOM_TOKEN
         self.encoding_aes_key = settings.WECOM_ENCODING_AES_KEY
         self.api_url = "https://qyapi.weixin.qq.com/cgi-bin"
-        
+
         # 简单的access_token缓存
         self.access_token = None
         self.access_token_expires = 0
 
-    def verify_url(self, msg_signature: str, timestamp: str, nonce: str, echostr: str) -> str:
+    def verify_url(
+        self, msg_signature: str, timestamp: str, nonce: str, echostr: str
+    ) -> str:
         """验证回调URL"""
         try:
             logger.debug(
                 f"开始验证URL: msg_signature={msg_signature}, timestamp={timestamp}, nonce={nonce}"
             )
             echostr = urllib.parse.unquote(echostr)
-            
+
             # 简单的URL验证，实际项目中需要实现加密验证
             # TODO: 实现企业微信加密验证逻辑
             logger.info(f"URL验证成功: {echostr}")
@@ -50,7 +52,7 @@ class WeComService:
             # 解析XML
             root = ET.fromstring(body.decode())
             encrypt = root.find("Encrypt")
-            
+
             if encrypt is not None and encrypt.text:
                 # 加密消息，需要解密
                 # TODO: 实现消息解密逻辑
@@ -68,15 +70,29 @@ class WeComService:
         """解析明文消息"""
         try:
             root = ET.fromstring(xml_content)
-            
+
             # 获取基础信息
-            msg_type = root.find("MsgType").text if root.find("MsgType") is not None else "unknown"
-            from_user = root.find("FromUserName").text if root.find("FromUserName") is not None else ""
-            create_time = root.find("CreateTime").text if root.find("CreateTime") is not None else ""
-            
+            msg_type = (
+                root.find("MsgType").text
+                if root.find("MsgType") is not None
+                else "unknown"
+            )
+            from_user = (
+                root.find("FromUserName").text
+                if root.find("FromUserName") is not None
+                else ""
+            )
+            create_time = (
+                root.find("CreateTime").text
+                if root.find("CreateTime") is not None
+                else ""
+            )
+
             # 处理事件消息
             if msg_type == "event":
-                event = root.find("Event").text if root.find("Event") is not None else ""
+                event = (
+                    root.find("Event").text if root.find("Event") is not None else ""
+                )
                 return {
                     "msg_type": msg_type,
                     "event": event,
@@ -86,7 +102,11 @@ class WeComService:
 
             # 处理文本消息
             elif msg_type == "text":
-                content = root.find("Content").text if root.find("Content") is not None else ""
+                content = (
+                    root.find("Content").text
+                    if root.find("Content") is not None
+                    else ""
+                )
                 return {
                     "msg_type": msg_type,
                     "content": content,
@@ -96,7 +116,9 @@ class WeComService:
 
             # 处理图片消息
             elif msg_type == "image":
-                pic_url = root.find("PicUrl").text if root.find("PicUrl") is not None else ""
+                pic_url = (
+                    root.find("PicUrl").text if root.find("PicUrl") is not None else ""
+                )
                 return {
                     "msg_type": msg_type,
                     "pic_url": pic_url,
@@ -106,7 +128,11 @@ class WeComService:
 
             # 处理语音消息
             elif msg_type == "voice":
-                voice_format = root.find("Format").text if root.find("Format") is not None else "amr"
+                voice_format = (
+                    root.find("Format").text
+                    if root.find("Format") is not None
+                    else "amr"
+                )
                 return {
                     "msg_type": msg_type,
                     "voice_format": voice_format,
@@ -178,9 +204,9 @@ class WeComService:
                     if result["errcode"] == 60020:
                         raise Exception("服务器IP未添加到企业微信白名单，请联系管理员")
                     raise Exception(error_msg)
-                    
+
                 logger.info(f"文本消息发送成功: {user_id}")
-                
+
         except Exception as e:
             logger.error(f"发送消息失败: {e}")
             raise
@@ -210,9 +236,9 @@ class WeComService:
                     error_msg = f"发送markdown消息失败: {result}"
                     logger.error(error_msg)
                     raise Exception(error_msg)
-                    
+
                 logger.info(f"Markdown消息发送成功: {user_id}")
-                
+
         except Exception as e:
             logger.error(f"发送markdown消息失败: {e}")
             raise
