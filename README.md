@@ -47,14 +47,14 @@ python start_server.py
 或者使用 uvicorn：
 
 ```bash
-uvicorn src.ai_smart_assistant.main:app --host 0.0.0.0 --port 8000
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 ### 4. 配置企业微信
 
-在企业微信管理后台配置回调URL：
+在企业微信管理后台配置回调 URL：
 
-- **回调URL**: `http://你的域名:8000/wechat/callback`
+- **回调 URL**: `http://你的域名:8000/wechat/callback`
 - **Token**: 与 `.env` 中的 `WECOM_TOKEN` 一致
 - **EncodingAESKey**: 与 `.env` 中的 `WECOM_ENCODING_AES_KEY` 一致
 
@@ -66,7 +66,7 @@ uvicorn src.ai_smart_assistant.main:app --host 0.0.0.0 --port 8000
 
 ### 2. 企业微信验证接口
 
-- **GET** `/wechat/verify` - 验证回调URL的有效性
+- **GET** `/wechat/verify` - 验证回调 URL 的有效性
 
 ### 3. 健康检查接口
 
@@ -83,7 +83,7 @@ uvicorn src.ai_smart_assistant.main:app --host 0.0.0.0 --port 8000
 
 ## 自定义业务逻辑
 
-在 `src/ai_smart_assistant/api/wechat.py` 文件中，你可以看到多个 `TODO` 注释，这些地方可以添加你的具体业务逻辑：
+在 `app/api/wechat.py` 文件中，你可以看到多个 `TODO` 注释，这些地方可以添加你的具体业务逻辑：
 
 ```python
 async def _handle_text_message(message: dict):
@@ -94,7 +94,7 @@ async def _handle_text_message(message: dict):
 
         # TODO: 在这里添加你的业务逻辑处理
         # 例如：调用AI服务、查询数据库、调用其他API等
-        
+
         # 发送回复消息
         reply_content = f"收到你的消息：{content}\n\n这是自动回复，具体业务逻辑待实现。"
         await wecom_service.send_text_message(user_id, reply_content)
@@ -106,7 +106,7 @@ async def _handle_text_message(message: dict):
 ## 项目结构
 
 ```
-src/ai_smart_assistant/
+app/
 ├── api/
 │   └── wechat.py          # 企业微信API接口
 ├── core/

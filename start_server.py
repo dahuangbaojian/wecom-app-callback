@@ -4,7 +4,7 @@
 """
 
 import uvicorn
-from src.ai_smart_assistant.core.config import get_settings
+from app.core.config import get_settings
 
 if __name__ == "__main__":
     settings = get_settings()
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     print(f"📝 日志级别: {settings.LOG_LEVEL}")
 
     uvicorn.run(
-        "src.ai_smart_assistant.main:app",
+        "app.main:app",
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.DEBUG,

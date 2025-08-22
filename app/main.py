@@ -1,6 +1,7 @@
 import time
 from fastapi import Request
 from .api.wechat import router as wechat_router
+from .api.health import router as health_router
 from .core.config import get_settings
 from .core.logging import setup_logging
 
@@ -11,11 +12,13 @@ logger = setup_logging()
 
 # 创建FastAPI应用
 from fastapi import FastAPI
+
 app = FastAPI(
     title="企业微信消息接收服务",
     description="专门用于接收企业微信自定义应用推送消息的服务",
-    version="1.0.0"
+    version="1.0.0",
 )
+
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -48,23 +51,7 @@ async def log_requests(request: Request, call_next):
 
     return response
 
+
 # 注册路由
+app.include_router(health_router)
 app.include_router(wechat_router)
-
-@app.get("/")
-async def root():
-    """根路径，返回服务信息"""
-    return {
-        "service": "企业微信消息接收服务",
-        "version": "1.0.0",
-        "description": "专门用于接收企业微信自定义应用推送消息",
-        "endpoints": {
-            "wechat_callback": "/wechat/callback",
-            "health": "/health"
-        }
-    }
-
-@app.get("/health")
-async def health_check():
-    """健康检查接口"""
-    return {"status": "healthy", "service": "企业微信消息接收服务"}

@@ -25,18 +25,6 @@ class CacheError(AIAssistantException):
     pass
 
 
-class ToolError(AIAssistantException):
-    """工具执行错误"""
-
-    pass
-
-
-class AgentError(AIAssistantException):
-    """Agent处理错误"""
-
-    pass
-
-
 class ValidationError(AIAssistantException):
     """数据验证错误"""
 
